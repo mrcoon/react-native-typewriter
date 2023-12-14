@@ -71,6 +71,20 @@ export default class TypeWriter extends Component {
     this.startTyping(initialDelay);
   }
 
+  shouldComponentUpdate(nextProps, nextState) {
+    if (this.props.children !== nextProps.children) {
+      return true;
+    }
+
+    for (const key in this.state) {
+      if (this.state.hasOwnProperty(key) && this.state[key] !== nextState[key]) {
+        return true;
+      }
+    }
+
+    return false;
+  }
+
   componentDidUpdate(prevProps, prevState) {
     const { children, typing } = this.props;
 
@@ -139,7 +153,11 @@ export default class TypeWriter extends Component {
   }
 
   startTyping(delay) {
-    this.timeoutId = setTimeout(this.typeNextChar, delay);
+    if (delay) {
+      this.timeoutId = setTimeout(this.typeNextChar, delay);
+    } else {
+      this.typeNextChar()
+    }
   }
 
   typeNextChar() {
